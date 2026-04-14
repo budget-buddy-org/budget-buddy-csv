@@ -20,15 +20,8 @@ def main():
 
     parser = argparse.ArgumentParser(description="Import budget-buddy CSV transactions into PostgreSQL.")
     parser.add_argument("file_path", help="Path to the CSV file.")
-    parser.add_argument("user_id", help="UUID of the user owner.")
+    parser.add_argument("username", help="Username of the user owner.")
     args = parser.parse_args()
-
-    # Validate user_id as UUID
-    try:
-        user_uuid = str(uuid.UUID(args.user_id))
-    except ValueError:
-        logger.error(f"Invalid user_id format: {args.user_id}. Must be a valid UUID.")
-        sys.exit(1)
 
     # Validate file existence
     if not os.path.exists(args.file_path):
@@ -58,11 +51,14 @@ def main():
     try:
         with conn:
             with conn.cursor() as cur:
-                # 1. Verify user exists
-                cur.execute("SELECT id FROM users WHERE id = %s", (user_uuid,))
-                if cur.fetchone() is None:
-                    logger.error(f"User with ID {user_uuid} not found in database.")
+                # 1. Verify user exists and fetch ID
+                cur.execute("SELECT id FROM users WHERE username = %s", (args.username,))
+                row = cur.fetchone()
+                if row is None:
+                    logger.error(f"User with username '{args.username}' not found in database.")
                     sys.exit(1)
+                
+                user_uuid = str(row[0])
 
                 # 2. Read CSV and prepare data
                 transactions_data, categories_in_csv = load_transactions_from_csv(args.file_path)
