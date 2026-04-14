@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.venv/
+env/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+
+# AI Agent memory
+.junie/
