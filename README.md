@@ -30,6 +30,54 @@ Example:
 python app.py test-data.csv 09a00c76-e6c7-494c-9dd1-cbe92e6528ae
 ```
 
+## Running with Docker
+
+The project is automatically built and published to GHCR (GitHub Container Registry) on every push to the `main` branch.
+
+**Image:** `ghcr.io/budget-buddy-org/budget-buddy-csv:latest`
+
+### Running the published image
+
+```bash
+docker run --rm \
+  --env-file .env \
+  -v $(pwd):/app/data \
+  ghcr.io/budget-buddy-org/budget-buddy-csv:latest /app/data/test-data.csv <user_id>
+```
+
+### Local build and run
+
+1. Build the Docker image:
+   ```bash
+   docker build -t budget-buddy-csv .
+   ```
+
+2. Run the importer:
+   ```bash
+   docker run --rm \
+     --env-file .env \
+     -v $(pwd):/app/data \
+     budget-buddy-csv /app/data/test-data.csv <user_id>
+   ```
+
+**Note:** Ensure that `DB_HOST` in your `.env` file is accessible from the container (e.g., use your machine's local IP or `host.docker.internal` instead of `localhost`).
+   
+### Running with Docker Compose (Integration)
+
+If you are using the main deployment from the `budget-buddy-deployment` directory, the importer is already integrated as a service.
+
+1. Navigate to the deployment directory:
+   ```bash
+   cd ../budget-buddy-deployment
+   ```
+
+2. Run the importer as a one-off task:
+   ```bash
+   docker compose run --rm csv-importer /app/data/test-data.csv <user_id>
+   ```
+
+This will use the same database and credentials configured for the entire application stack.
+
 ## Running Tests
 
 Install development dependencies:
