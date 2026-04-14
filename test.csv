@@ -1,0 +1,11 @@
+date,amount,description,category
+01/01/2026,"10,00 €",Lunch,Lunch
+02/01/2026,"25,50 €",Groceries,Groceries
+03/01/2026,"100,00 €",Rent,Services
+04/01/2026,"5,25 €",Coffee,Eating out
+05/01/2026,"50,00 €",Gasoline,Transport
+06/01/2026,"15,00 €",Netflix,Subscriptions
+07/01/2026,"2,00 €",Bus ticket,Transport
+08/01/2026,"1.200,00 €",Salary,Income
+09/01/2026,"45,67 €",Medicine,Health/medical
+10/01/2026,"30,00 €",Cinema,Entertainment

@@ -1,4 +1,4 @@
-from utils import parse_amount, parse_date, get_now
+from utils import parse_amount, parse_date, get_now, load_transactions_from_csv
 import argparse
 import csv
 import logging
@@ -65,36 +65,7 @@ def main():
                     sys.exit(1)
 
                 # 2. Read CSV and prepare data
-                transactions_data = []
-                categories_in_csv = set()
-                
-                with open(args.file_path, mode='r', encoding='utf-8') as f:
-                    reader = csv.DictReader(f)
-                    row_num = 1
-                    for row in reader:
-                        row_num += 1
-                        try:
-                            # Basic validation
-                            if not all(k in row for k in ('date', 'amount', 'category')):
-                                logger.warning(f"Row {row_num} is missing required columns. Skipping.")
-                                continue
-                                
-                            category_name = row['category'].strip()
-                            if not category_name:
-                                logger.warning(f"Row {row_num} has empty category. Skipping.")
-                                continue
-                            
-                            categories_in_csv.add(category_name)
-                            
-                            transactions_data.append({
-                                'date': parse_date(row['date'].strip()),
-                                'amount': parse_amount(row['amount'].strip()),
-                                'description': row.get('description', '').strip() or None,
-                                'category': category_name
-                            })
-                        except ValueError as ve:
-                            logger.warning(f"Skipping row {row_num} due to data format error: {ve}")
-                            continue
+                transactions_data, categories_in_csv = load_transactions_from_csv(args.file_path)
 
                 if not transactions_data:
                     logger.info("No valid transactions found in CSV.")
