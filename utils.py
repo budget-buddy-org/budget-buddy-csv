@@ -47,7 +47,7 @@ def load_transactions_from_csv(file_path: str):
             row_num += 1
             try:
                 # Basic validation
-                if not all(k in row for k in ('date', 'amount', 'category')):
+                if not all(k in row for k in ('date', 'amount', 'category', 'type')):
                     logger.warning(f"Row {row_num} is missing required columns. Skipping.")
                     continue
                     
@@ -62,7 +62,8 @@ def load_transactions_from_csv(file_path: str):
                     'date': parse_date(row['date'].strip()),
                     'amount': parse_amount(row['amount'].strip()),
                     'description': row.get('description', '').strip() or None,
-                    'category': category_name
+                    'category': category_name,
+                    'type': row['type'].strip().upper()
                 })
             except ValueError as ve:
                 logger.warning(f"Skipping row {row_num} due to data format error: {ve}")

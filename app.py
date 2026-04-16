@@ -93,14 +93,14 @@ def main():
 
                 # 4. Fetch existing transactions to avoid duplicates
                 cur.execute(
-                    "SELECT date, amount, description, category_id FROM transactions WHERE owner_id = %s",
+                    "SELECT date, amount, description, category_id, type FROM transactions WHERE owner_id = %s",
                     (user_uuid,)
                 )
                 existing_tx_keys = set()
                 for row in cur.fetchall():
                     # PostgreSQL date might be a date object
                     tx_date = row[0].strftime('%Y-%m-%d') if hasattr(row[0], 'strftime') else str(row[0])
-                    existing_tx_keys.add((tx_date, row[1], row[2], row[3]))
+                    existing_tx_keys.add((tx_date, row[1], row[2], row[3], row[4]))
 
                 # 5. Batch insert transactions
                 transaction_inserts = []
@@ -109,7 +109,7 @@ def main():
                 
                 for row in transactions_data:
                     category_id = existing_categories[row['category']]
-                    key = (row['date'], row['amount'], row['description'], category_id)
+                    key = (row['date'], row['amount'], row['description'], category_id, row['type'])
                     
                     if key in existing_tx_keys:
                         skipped_count += 1
@@ -120,7 +120,7 @@ def main():
                         1, 
                         category_id, 
                         row['amount'], 
-                        'EXPENSE', 
+                        row['type'], 
                         'EUR', 
                         row['date'], 
                         row['description'], 

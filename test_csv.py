@@ -13,16 +13,18 @@ def test_csv_parsing_integrity():
     """Verify that the parsed data matches the expected values from test.csv."""
     transactions, _ = load_transactions_from_csv('test.csv')
     
-    # Row 1: 01/01/2026,"10,00 €",Lunch,Lunch
+    # Row 1: 01/01/2026,"10,00 €",Lunch,Lunch,EXPENSE
     assert transactions[0]['date'] == '2026-01-01'
     assert transactions[0]['amount'] == 1000
     assert transactions[0]['description'] == 'Lunch'
     assert transactions[0]['category'] == 'Lunch'
+    assert transactions[0]['type'] == 'EXPENSE'
     
-    # Row 8: 08/01/2026,"1.200,00 €",Salary,Income
+    # Row 8: 08/01/2026,"1.200,00 €",Salary,Income,INCOME
     assert transactions[7]['date'] == '2026-01-08'
     assert transactions[7]['amount'] == 120000
     assert transactions[7]['category'] == 'Income'
+    assert transactions[7]['type'] == 'INCOME'
 
 def test_csv_categories():
     """Verify that the categories are correctly extracted from test.csv."""
