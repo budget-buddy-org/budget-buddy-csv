@@ -20,7 +20,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Import budget-buddy CSV transactions into PostgreSQL.")
     parser.add_argument("file_path", help="Path to the CSV file.")
-    parser.add_argument("username", help="Username of the user owner.")
+    parser.add_argument("oidc_subject", help="OIDC subject (sub claim) of the user owner.")
     args = parser.parse_args()
 
     # Validate file existence
@@ -52,10 +52,10 @@ def main():
         with conn:
             with conn.cursor() as cur:
                 # 1. Verify user exists and fetch ID
-                cur.execute("SELECT id FROM users WHERE username = %s", (args.username,))
+                cur.execute("SELECT id FROM users WHERE oidc_subject = %s", (args.oidc_subject,))
                 row = cur.fetchone()
                 if row is None:
-                    logger.error(f"User with username '{args.username}' not found in database.")
+                    logger.error(f"User with oidc_subject '{args.oidc_subject}' not found in database.")
                     sys.exit(1)
                 
                 user_uuid = str(row[0])
